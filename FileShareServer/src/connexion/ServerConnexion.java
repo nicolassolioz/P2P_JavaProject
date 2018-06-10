@@ -17,8 +17,17 @@ import javax.swing.DefaultListModel;
 
 public class ServerConnexion implements java.io.Serializable{
 
+	public Boolean isShuttingDown = false;
+	
+	public void shutDown()
+	{
+		System.out.println("killing the server");
+		isShuttingDown = true;
+	}
+	
 	public void connectServer() {
-		ServerSocket mySkServer ;
+		ServerSocket mySkServer = null ;
+		
 		Socket srvSocket = null ;
 		InetAddress localAddress=null;
 
@@ -32,44 +41,25 @@ public class ServerConnexion implements java.io.Serializable{
 			System.out.println("Used IpAddress :" + mySkServer.getInetAddress());
 			System.out.println("Listening to Port :" + mySkServer.getLocalPort());
 
-			mySkServer.setSoTimeout(30000);//set 30 sec timout
+			mySkServer.setSoTimeout(1000);
 
-			interfaces.HomeInterface homeInterface = new interfaces.HomeInterface();
-			homeInterface.lblServer.setText("online");
             //Listen to a client connection wait until a client connects			
 			System.out.println("Waiting for a client connection:");
-			srvSocket = mySkServer.accept(); 
-			
-			int usedPort = mySkServer.getLocalPort();
-			System.out.println("Used port : " + usedPort);
-			System.out.println("A client is connected");
 
 			
-			//get client username
-			ObjectInputStream OinUsername = new ObjectInputStream(srvSocket.getInputStream());
-			
-			String username = OinUsername.readUTF();
-			
-			//send client list of available files with their respectives owners / IP numbers
-			fileManager.FileManager files = new fileManager.FileManager();
-			
-			ObjectOutputStream OoutListClients = new ObjectOutputStream(srvSocket.getOutputStream());
-			
-			String[][] availableFiles = files.GetAvailableFiles(username);
-			
-			
+			while (!isShuttingDown) {
+	            try {
+	                srvSocket = mySkServer.accept();
+	                // new thread for a client      
+	                ConnectThread thread = new ConnectThread(srvSocket);
+		            thread.start();
+	            } catch (IOException e) {
+	                // no new connection
+	            }       
+	        }
 
-			OoutListClients.writeObject(availableFiles);
-			
-			OoutListClients.flush();
-			OinUsername.close();
-			OoutListClients.close();
-				
 			mySkServer.close();
-			srvSocket.close();
-
-			System.out.println("Closing socket....");
-
+			
 		}catch (SocketException e) {
 
 			//System.out.println("Connection Timed out");
@@ -80,4 +70,6 @@ public class ServerConnexion implements java.io.Serializable{
 		}
 
 	}
+	
+
 }

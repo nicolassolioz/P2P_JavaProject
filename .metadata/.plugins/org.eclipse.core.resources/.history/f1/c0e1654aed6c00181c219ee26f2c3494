@@ -1,0 +1,89 @@
+package interfaces;
+
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import connexion.ServerConnexion;
+
+public class HomeInterface extends JFrame implements ActionListener{
+
+	JButton btnStartServer = new JButton("Start the server");
+	JButton btnCloseServer = new JButton("Stop the Server");
+	public JLabel lblServer = new JLabel("offline");
+	
+	ServerConnexion sConnect = new ServerConnexion();
+	
+	Thread thread = new Thread()
+	{
+	    public void run()
+	    {
+	    	sConnect.connectServer();
+	    }
+	};
+	
+	public HomeInterface() {
+		setPreferredSize(new Dimension(500,300));
+		JPanel panel = new JPanel(new GridBagLayout());
+		GridBagConstraints constraints = new GridBagConstraints();
+        constraints.anchor = GridBagConstraints.WEST;
+        constraints.insets = new Insets(10, 10, 10, 10);
+		
+		constraints.gridx = 0;
+		constraints.gridy = 0;
+		panel.add(lblServer, constraints);
+		
+		constraints.gridx = 1;
+		panel.add(btnStartServer, constraints);
+		
+		constraints.gridy = 1;
+		panel.add(btnCloseServer, constraints);
+		
+		btnStartServer.addActionListener(this);
+		add(panel);
+		pack();
+	}
+	
+	public void actionPerformed(ActionEvent e) {	
+		if(e.getSource() == btnStartServer)
+		{
+			if(!thread.isAlive())
+			{
+				lblServer.setText("Online");
+				thread.start();
+			}
+				
+			else
+				lblServer.setText("The server has already started.");						
+		}
+		
+		if(e.getSource() == btnCloseServer)
+		{
+			System.out.println("clicked");
+			if(thread.isAlive())
+			{
+				System.out.println("clicked");
+				sConnect.shutDown();
+				
+				try {
+					thread.join();
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+				lblServer.setText("Server Offline");
+			}				
+			else
+				lblServer.setText("The server hasn't started yet.");
+		}		
+	}
+}

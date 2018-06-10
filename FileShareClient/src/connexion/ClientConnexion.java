@@ -23,7 +23,7 @@ import client.Client;
 //check username and pwd with user.txt file, if ok, validate the connexion
 public class ClientConnexion implements java.io.Serializable {
 	
-	public void registerNewClient(client.Client client) {
+	public void registerNewClient(client.Client client) { //MUST BE SERVER SIDE
 		
 		//check if username doesn't already exist...
 		String FILENAME = "../FileShareServer/src/db/db";
@@ -75,8 +75,6 @@ public class ClientConnexion implements java.io.Serializable {
 					ObjectInputStream OinListClients = 
 							new ObjectInputStream(clientSocket.getInputStream());
 					
-					
-
 					try {
 						result = (String[][]) OinListClients.readObject();
 						if (result == null)
@@ -114,7 +112,7 @@ public class ClientConnexion implements java.io.Serializable {
 			return result;
 	}
 	
-	public void writeDBConnect(client.Client client, int connectDigit) {
+	public void writeDBConnect(client.Client client, int connectDigit) { //MUST BE SERVER SIDE
 		
 		String FILENAME = "../FileShareServer/src/db/db";
 		fileManager.FileManager files = new fileManager.FileManager();
