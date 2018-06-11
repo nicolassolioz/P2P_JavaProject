@@ -41,7 +41,7 @@ public Boolean isShuttingDown = false;
 			while (!isShuttingDown) {
 	            try {
 	                srvSocket = mySkServer.accept();
-	                // new thread for a client      
+	                // new thread for a new connection   
 	                ConnectThread thread = new ConnectThread(srvSocket);
 		            thread.start();
 	            } catch (IOException e) {

@@ -14,13 +14,6 @@ public class Main {
 		// TODO Auto-generated method stub
 		
 		//call form, and the form does the connexion based on values
-		/*client.Client client = new client.Client("joanna", "1234");
-		connexion.ClientConnexion connect = new connexion.ClientConnexion();
-		connect.connectClient(client);
-		
-		fileManager.FileManager files = new fileManager.FileManager();
-		files.GetAvailableFiles("joanna");*/
-		
 		new interfaces.HomeInterface().setVisible(true);				
 	}
 }

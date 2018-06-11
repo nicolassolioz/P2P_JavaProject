@@ -93,10 +93,13 @@ public class HomeInterface extends JFrame implements ActionListener {
     			}
     		}
     		
-    		if (connect.checkClient(client, clientPort) == true && clientPort > 0) {  
+    		String[][] result = connect.connectClient(client, clientPort);
+    		
+    		if (result != null && clientPort > 0) {  
     			
-    			String[][] result = connect.connectClient(client, clientPort);
-
+    			// HERE I MUST SIMPLY CONNECT THE CLIENT AND IF RESULT
+    			// DOESNT RETURN EMPTY OR A FILE THAN CONNEXION PROBLEM
+    			
     			new interfaces.ConnectedInterface(client, result).setVisible(true);
                 this.setVisible(false);
  

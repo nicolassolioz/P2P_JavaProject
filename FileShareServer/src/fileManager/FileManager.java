@@ -32,7 +32,8 @@ public String[][] GetAvailableFiles(String username) {
 				{
 					if(parts[5].equals("1"))
 					{
-						availableFiles = RetrieveFiles(parts[3],parts[2], startIndex);
+						// NOT POSSIBLE TO GET THIRD CONNEXION, TRY LATER
+						availableFiles = RetrieveFiles(parts[4], parts[3],parts[2], startIndex);
 						startIndex = availableFiles.length;
 					}
 				}
@@ -48,22 +49,24 @@ public String[][] GetAvailableFiles(String username) {
 		return availableFiles;
 	}
 
-	public String[][] RetrieveFiles(String IP, String sharedFolder, int startIndex) {
+	public String[][] RetrieveFiles(String socket, String IP, String sharedFolder, int startIndex) {
 		//print content of files
 		//loop through folder given in parameter and assign to new String
 		//source : https://stackoverflow.com/questions/5694385/getting-the-filenames-of-all-files-in-a-folder
 		File folder = new File(sharedFolder);
 		File[] listOfFiles = folder.listFiles();
-		String[][] files = new String[listOfFiles.length][3];
+		String[][] files = new String[listOfFiles.length][5];
 	
 		    for (int i = startIndex; i < listOfFiles.length + startIndex; i++) {
 		    	files[i][0] = listOfFiles[i].getName();
 		    	files[i][1] = IP;
+		    	files[i][2] = socket;
+		    	files[i][4] = sharedFolder;
 		    	
 		    	if (listOfFiles[i].isFile()) 
-		    		files[i][2] = "f";		      
+		    		files[i][3] = "f";		      
 		    	else if (listOfFiles[i].isDirectory()) 
-		    		files[i][2] = "d";
+		    		files[i][3] = "d";
 	
 		    	}
 		//********************************************************************
@@ -94,4 +97,5 @@ public String[][] GetAvailableFiles(String username) {
 	
 		return result;
 	}
+
 }

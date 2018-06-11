@@ -1,8 +1,11 @@
 package connexion;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
@@ -17,17 +20,21 @@ import java.net.UnknownHostException;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
+import javax.swing.filechooser.FileSystemView;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 import client.Client;
 
 //check username and pwd with user.txt file, if ok, validate the connexion
 public class ClientConnexion implements java.io.Serializable {
 	
-	public void registerNewClient(client.Client client) { //MUST BE SERVER SIDE
+	public void registerNewClient(client.Client client, String folderName) { 
 		
-		//check if username doesn't already exist...
+		// MUST BE DONE SERVER SIDE NORMALLY
+		// MUST NORMALLY ALSO CHECK IF USERNAME DOESN'T ALREADY EXIST
 		String FILENAME = "../FileShareServer/src/db/db";
-		String folderName = "Shared" + client.getUsername();
 		
 		try {
 			FileWriter fw = new FileWriter(FILENAME, true);
@@ -45,14 +52,49 @@ public class ClientConnexion implements java.io.Serializable {
 		
 	}
 	
+	public void getFile(String filename, String IP, int port, String path) {	
+		try {
+			// connect to server based on parameters given in constructor
+			Socket clientSocket = new Socket(InetAddress.getLocalHost().getHostName(),port);
+			
+			// send file name AND path to server
+			ObjectOutputStream OoutFilename = new ObjectOutputStream(clientSocket.getOutputStream());
+
+			OoutFilename.writeUTF(filename + ";" + path);
+			
+			OoutFilename.flush();
+					
+			// get file from server			
+			InputStream OinFile = clientSocket.getInputStream();
+			
+			// IOUtils is used from referenced libraries commons io 2.6	
+			byte[] byteArray = IOUtils.toByteArray(OinFile);
+			
+			// write new file in share folder
+			FileOutputStream fos = new FileOutputStream(
+					new File(".\\downloads\\" + filename));
+
+			fos.write(byteArray);
+			fos.close();
+			
+			System.out.println("file downloaded successfuly");
+					
+			OoutFilename.close();
+			clientSocket.close();
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
 	public String[][] connectClient(client.Client client, int clientPort) {
 					
 			String[][] result = null; //0 = failed connexion, 1 = succesful connexion
 			Socket clientSocket = new Socket();
 			InetAddress serverAddress = null;
-	        
-			//check if client exist, then connect to server
-			
+	        	
 			try {
 				serverAddress = InetAddress.getLocalHost();
 				System.out.println("Get the address of the server : "+ serverAddress.getHostAddress());
@@ -64,10 +106,10 @@ public class ClientConnexion implements java.io.Serializable {
 
 					System.out.println("We got the connexion to  "+ serverAddress);
 					
-					//send username to server
+					//send username + password + + client Port to server
 					ObjectOutputStream OoutUsername = new ObjectOutputStream(clientSocket.getOutputStream());
 
-					OoutUsername.writeUTF(client.getUsername());
+					OoutUsername.writeUTF(client.getUsername() + ";" + client.getPwd() + ";" + clientPort);
 					
 					OoutUsername.flush();
 										
@@ -82,6 +124,9 @@ public class ClientConnexion implements java.io.Serializable {
 							result = new String[1][1];
 							result[0][0] = "empty";
 						}
+						
+						if(result[0][0].equals("failed connection"))
+							result = null;
 							
 						
 					} catch (ClassNotFoundException e) {
@@ -127,115 +172,6 @@ public class ClientConnexion implements java.io.Serializable {
 			return result;
 	}
 	
-	public void writeDBConnect(client.Client client, int connectDigit, int port) { //MUST BE SERVER SIDE
-		
-		String FILENAME = "../FileShareServer/src/db/db";
-		fileManager.FileManager files = new fileManager.FileManager();
-		int nbLines = files.getNumberLines();
-				
-		//write in db.txt that the client is connected
-		try {			
-			FileReader frDB = new FileReader(FILENAME);
-			BufferedReader brDB = new BufferedReader(frDB);							
-			String[] toWrite = new String[nbLines];
-			
-			//loop through file and find the line to replace
-			for(int i = 0; i<nbLines; i++)
-			{
-				String[] parts = brDB.readLine().split(";");	
-				if(parts[0].equals(client.getUsername()))
-				{				
-					if(connectDigit == 1)
-					{
-						parts[5] = "1";
-						parts[4] = Integer.toString(port);
-					}					
-					else
-						parts[5] = "0";			
-				}	
-				
-				toWrite[i] = parts[0] + ";" + parts[1] + ";" + parts[2] + ";" + parts[3] + ";" + parts[4] + ";" + parts[5];
-			}
-			
-			//fill file with lines to write
-			FileWriter fw = new FileWriter(FILENAME);
-			BufferedWriter bw = new BufferedWriter(fw);
-			
-			for(int i = 0; i<nbLines;i++)
-			{
-				bw.write(toWrite[i]);
-				bw.newLine();
-			}
-			
-			//close all streams
-			bw.flush();
-			fw.close();
-			bw.close();
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
-	}
 	
-	public boolean checkClient(client.Client client, int port) {
-		//src = https://www.mkyong.com/java/how-to-read-file-from-java-bufferedreader-example/
-		BufferedReader brLine = null;
-		FileReader frLine = null;
-		String FILENAME = "../FileShareServer/src/db/db";
-		
-		Boolean result = false;
-
-		try {
-			frLine = new FileReader(FILENAME);
-			brLine = new BufferedReader(frLine);
-			
-			//count lines
-			int nbLines = 0;
-			while (brLine.readLine() != null) nbLines++;
-			
-			FileReader frCheck = new FileReader(FILENAME);
-			BufferedReader brCheck = new BufferedReader(frCheck);
-
-			for(int i = 0;i<nbLines;i++)
-			{
-				String[] parts = brCheck.readLine().split(";");
-				String username = parts[0];
-				String pwd = parts[1]; 
-
-				if(username.equals(client.getUsername()) && pwd.equals(client.getPwd()))
-				{
-					String newText = parts[0] + ";" + parts[1] + ";" + parts[2] + ";" + parts[3] + ";" + port + ";" + 1; 
-					String oldText = parts[0] + ";" + parts[1] + ";" + parts[2] + ";" + parts[3] + ";" + parts[4] + ";" + 0; 
-					writeDBConnect(client, 1, port);
-					return true;
-				}				
-			}
-			
-			frCheck.close();
-			brCheck.close();
-		} catch (IOException e) {
-
-			e.printStackTrace();
-
-		} finally {
-
-			try {
-
-				if (brLine != null)
-					brLine.close();
-
-				if (frLine != null)
-					frLine.close();
-
-			} catch (IOException ex) {
-
-				ex.printStackTrace();
-			}
-		}		
-		return result;
-	}
 	
 }

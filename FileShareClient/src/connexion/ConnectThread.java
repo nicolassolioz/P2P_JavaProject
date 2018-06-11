@@ -1,12 +1,19 @@
 package connexion;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.Socket;
 
-//BASED ON CODE FROM https://stackoverflow.com/questions/10131377/socket-programming-multiple-client-to-one-server
+import org.apache.commons.io.FileUtils;
+
+// BASED ON CODE FROM https://stackoverflow.com/questions/10131377/socket-programming-multiple-client-to-one-server
 // ALL RIGHTS RESERVED
+
+// CLIENT
 
 public class ConnectThread extends Thread{
 	
@@ -19,26 +26,42 @@ public class ConnectThread extends Thread{
 	public void run() {
 		{
 		System.out.println("RUN");
-		//get client username
+		//get file
 		try {
-			ObjectInputStream OinUsername = new ObjectInputStream(socket.getInputStream());
 			
-			String username = OinUsername.readUTF();
+			// get file name AND path from client
+			ObjectInputStream OinFile = new ObjectInputStream(socket.getInputStream());
 			
-			//send client list of available files with their respectives owners / IP numbers
-			fileManager.FileManager files = new fileManager.FileManager();
+			String[] parts = OinFile.readUTF().split(";");
 			
-			ObjectOutputStream OoutListClients = new ObjectOutputStream(socket.getOutputStream());
+			String filename = parts[0];
+			String path = parts[1];
+					
+			// send file to server
+			OutputStream OoutFile = socket.getOutputStream();
 			
-			String[][] availableFiles = files.GetAvailableFiles(username);
+			File file = new File(path + "\\" + filename);
 			
-			OoutListClients.writeObject(availableFiles);
+			if(!file.exists())
+			{
+				int fileLength = (int) file.length();
+				
+				byte[] byteArray = new byte[fileLength];
+				
+				// FileUtils is used from referenced libraries commons io 2.6			
+				byteArray = FileUtils.readFileToByteArray(file);
+				
+				OoutFile.write(byteArray);
+			}
+			else
+			{
+				System.out.println("You have already downloaded a file with a similar name");
+			}
+					
+			OoutFile.flush();
+			OinFile.close();
+			OoutFile.close();
 			
-			OoutListClients.flush();
-			
-			OoutListClients.close();
-		
-			OinUsername.close();
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

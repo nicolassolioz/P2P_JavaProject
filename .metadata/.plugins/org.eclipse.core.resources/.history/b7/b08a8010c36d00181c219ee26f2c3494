@@ -1,0 +1,123 @@
+package interfaces;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.DatagramSocket;
+import java.net.ServerSocket;
+
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import connexion.CheckAvailablePort;
+
+public class HomeInterface extends JFrame implements ActionListener {
+
+	private JLabel lblUsername = new JLabel("Username : ");
+	private JLabel lblPassword = new JLabel("Password : ");
+	private JLabel lblError = new JLabel("");
+	
+	private JTextField txtUsername = new JTextField(20);
+	private JTextField txtPassword = new JTextField(20);
+	
+	private JButton btnConnect = new JButton("Connect");
+	private JButton btnRegister = new JButton("Register");
+	
+	public HomeInterface() {
+		setPreferredSize(new Dimension(500,300));
+		JPanel panel = new JPanel(new GridBagLayout());
+		
+		GridBagConstraints constraints = new GridBagConstraints();
+        constraints.anchor = GridBagConstraints.WEST;
+        constraints.insets = new Insets(10, 10, 10, 10);
+		
+		constraints.gridx = 0;
+		constraints.gridy = 0;
+		panel.add(lblUsername, constraints);
+		
+		constraints.gridx = 1;
+		panel.add(txtUsername, constraints);
+		
+		constraints.gridx = 0;
+		constraints.gridy = 1;
+		panel.add(lblPassword, constraints);
+		
+		constraints.gridx = 1;
+		panel.add(txtPassword, constraints);
+		
+		constraints.gridx = 0;
+		constraints.gridy = 2;
+		panel.add(btnConnect, constraints);
+		
+		constraints.gridx = 1;
+		panel.add(btnRegister, constraints);
+		
+		constraints.gridx = 0;
+		constraints.gridy = 3;
+		constraints.gridwidth = 2;
+		panel.add(lblError, constraints);
+		
+		//add event listeners to buttons
+		
+		btnConnect.addActionListener(this);
+		btnRegister.addActionListener(this);
+		add(panel);
+		pack();
+	}
+	
+	public void actionPerformed(ActionEvent e) {
+			
+        if(e.getSource() == btnConnect)
+        {
+        	client.Client client = new client.Client(txtUsername.getText(), txtPassword.getText());
+    		connexion.ClientConnexion connect = new connexion.ClientConnexion();
+    		
+    		int clientPort = 0;
+    		CheckAvailablePort portCheck = new CheckAvailablePort();
+    		
+    		for(int i = 50000; i<50100; i++)
+    		{
+    			if(portCheck.available(i))
+    			{
+    				clientPort = i;
+    				i = 50100;
+    			}
+    		}
+    		
+    		if (connect.checkClient(client, clientPort) == true && clientPort > 0) {  
+    			
+    			// HERE I MUST SIMPLY CONNECT THE CLIENT AND IF RESULT
+    			// DOESNT RETURN EMPTY OR A FILE THAN CONNEXION PROBLEM
+    			
+    			String[][] result = connect.connectClient(client, clientPort);
+
+    			new interfaces.ConnectedInterface(client, result).setVisible(true);
+                this.setVisible(false);
+ 
+    			
+    		}
+    		else
+    		{
+    			lblError.setText("incorrect username or password OR no available connexion");
+    		}
+    		
+    		/*fileManager.FileManager files = new fileManager.FileManager();
+    		files.GetAvailableFiles("joanna");*/
+        }
+        
+        if(e.getSource() == btnRegister) {
+        	new interfaces.RegisterInterface().setVisible(true);
+        	this.setVisible(false);
+        }
+    }  
+	
+}

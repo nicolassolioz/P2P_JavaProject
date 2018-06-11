@@ -15,6 +15,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import client.Client;
+
 public class ConnectedInterface extends JFrame implements ActionListener{
 
 	private JLabel lblFiles = new JLabel("Available files : ");	
@@ -29,6 +31,7 @@ public class ConnectedInterface extends JFrame implements ActionListener{
 	private String[][] availableFiles;
 	client.Client client;
 
+	connexion.ClientConnexion connect = new connexion.ClientConnexion();
 	
 	public ConnectedInterface(client.Client client, String[][] availableFiles) {
 		this.client = client;
@@ -96,13 +99,20 @@ public class ConnectedInterface extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == btnDownload)
         {	
-        	lblError.setText("Download " + availableFiles[listFiles.getSelectedIndex()][0]);
+
+        	String file = availableFiles[listFiles.getSelectedIndex()][0];
+        	String IP = availableFiles[listFiles.getSelectedIndex()][1];
+        	int port = Integer.valueOf(availableFiles[listFiles.getSelectedIndex()][2]);
+        	String shareFolder = availableFiles[listFiles.getSelectedIndex()][4];
+        	
+        	System.out.println(IP);
+        	connect.getFile(file, IP, port, shareFolder);
         }
         
         if(e.getSource() == btnDisconnect) {
-        	connexion.ClientConnexion connect = new connexion.ClientConnexion();
-        	connect.writeDBConnect(this.client, 0, 50000);
+
         	this.setVisible(false);
         }
-    }	
+    }
+
 }

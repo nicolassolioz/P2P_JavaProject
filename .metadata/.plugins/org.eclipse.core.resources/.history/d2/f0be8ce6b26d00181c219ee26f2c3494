@@ -1,0 +1,47 @@
+package connexion;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+
+// BASED ON CODE FROM https://stackoverflow.com/questions/10131377/socket-programming-multiple-client-to-one-server
+// ALL RIGHTS RESERVED
+
+public class ConnectThread extends Thread{
+	
+	protected Socket socket;
+
+	public ConnectThread(Socket clientSocket) {
+        this.socket = clientSocket;
+    }
+	
+	public void run() {
+		{
+		System.out.println("RUN");
+		//get file
+		try {
+			
+			// get file name AND path from client
+			ObjectInputStream OinFile = new ObjectInputStream(socket.getInputStream());
+			
+			String[] parts = OinFile.readUTF().split(";");
+			
+			String filename = parts[0];
+			
+			OinFile.close();
+			
+			// send file to server
+			ObjectOutputStream OoutFile = new ObjectOutputStream(socket.getOutputStream());
+			File file = new File(path + "\\" + filename);
+			
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+	}
+	}
+	
+}

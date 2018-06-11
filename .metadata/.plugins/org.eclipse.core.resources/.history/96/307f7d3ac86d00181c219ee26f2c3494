@@ -1,0 +1,68 @@
+package connexion;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
+public class WriteDBConnect {
+
+public void write(String username, int connectDigit, int port) { //MUST BE SERVER SIDE
+		
+		String FILENAME = "../FileShareServer/src/db/db";
+		fileManager.FileManager files = new fileManager.FileManager();
+		int nbLines = files.getNumberLines();
+				
+		//write in db.txt that the client is connected
+		try {			
+			FileReader frDB = new FileReader(FILENAME);
+			BufferedReader brDB = new BufferedReader(frDB);							
+			String[] toWrite = new String[nbLines];
+			
+			//loop through file and find the line to replace
+			for(int i = 0; i<nbLines; i++)
+			{
+				String[] parts = brDB.readLine().split(";");	
+				if(parts[0].equals(username) || username.equals("all"))
+				{				
+					if(connectDigit == 1)
+					{
+						parts[5] = "1";
+						parts[4] = Integer.toString(port);
+						
+					}					
+					else
+					{
+						parts[5] = "0";		
+						parts[4] = Integer.toString(port);
+					}
+							
+				}	
+				
+				toWrite[i] = parts[0] + ";" + parts[1] + ";" + parts[2] + ";" + parts[3] + ";" + parts[4] + ";" + parts[5];
+			}
+			
+			//fill file with lines to write
+			FileWriter fw = new FileWriter(FILENAME);
+			BufferedWriter bw = new BufferedWriter(fw);
+			
+			for(int i = 0; i<nbLines;i++)
+			{
+				bw.write(toWrite[i]);
+				bw.newLine();
+			}
+			
+			//close all streams
+			bw.flush();
+			fw.close();
+			bw.close();
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+	}
+}

@@ -7,6 +7,7 @@ import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -19,11 +20,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import connexion.ServerConnexion;
+import connexion.WriteDBConnect;
 
 public class HomeInterface extends JFrame implements ActionListener{
 
 	JButton btnStartServer = new JButton("Start the server");
 	JButton btnCloseServer = new JButton("Stop the Server");
+	JButton btnDisconnect = new JButton("Erase client connexion trace");
+	
 	public JLabel lblServer = new JLabel("Offline");
 	public JLabel lblError = new JLabel("");
 	
@@ -70,12 +74,17 @@ public class HomeInterface extends JFrame implements ActionListener{
 		
 		constraints.gridy = 1;
 		panel.add(redLightLbl, constraints);
+		
+		constraints.gridx = 2;
+		constraints.gridy = 3;
+		panel.add(btnDisconnect, constraints);
 			
 		btnStartServer.addActionListener(this);
 		btnCloseServer.addActionListener(this);
+		btnDisconnect.addActionListener(this);
 		
 		panel.getComponent(4).setVisible(false);
-		
+
 		add(panel);
 		pack();
 
@@ -134,5 +143,11 @@ public class HomeInterface extends JFrame implements ActionListener{
 			else
 				lblError.setText("The server hasn't started yet.");
 		}		
+		if(e.getSource() == btnDisconnect)
+		{
+			WriteDBConnect writeCo = new WriteDBConnect();
+			writeCo.write("all", 0, 50000);
+			System.out.println("client connexion trace has been erased");
+		}
 	}
 }

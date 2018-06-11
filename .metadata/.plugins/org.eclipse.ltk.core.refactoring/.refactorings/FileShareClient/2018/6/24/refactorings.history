@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring accessors="true" comment="Delete 5 elements from project &apos;FileShareClient&apos;&#x0D;&#x0A;- Original project: &apos;FileShareClient&apos;&#x0D;&#x0A;- Original elements:&#x0D;&#x0A;     CV.txt&#x0D;&#x0A;     Lettre de motivation.txt&#x0D;&#x0A;     Lettre de recommandation.txt&#x0D;&#x0A;     Nicolas.txt&#x0D;&#x0A;     Travail de Bachelor.txt" description="Delete elements" element1="downloads/Lettre de motivation.txt" element2="downloads/Nicolas.txt" element3="downloads/CV.txt" element4="downloads/Lettre de recommandation.txt" element5="downloads/Travail de Bachelor.txt" elements="0" flags="589830" id="org.eclipse.jdt.ui.delete" resources="5" stamp="1528752497044" subPackages="false" version="1.0"/>
+</session>
