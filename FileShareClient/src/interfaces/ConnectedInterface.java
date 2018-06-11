@@ -101,7 +101,7 @@ public class ConnectedInterface extends JFrame implements ActionListener{
         
         if(e.getSource() == btnDisconnect) {
         	connexion.ClientConnexion connect = new connexion.ClientConnexion();
-        	connect.writeDBConnect(this.client, 0);
+        	connect.writeDBConnect(this.client, 0, 50000);
         	this.setVisible(false);
         }
     }	

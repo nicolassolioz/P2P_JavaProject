@@ -31,7 +31,7 @@ public class FileManager {
 				String[] parts = brCheck.readLine().split(";");		
 				if(!parts[0].equals(username))
 				{
-					if(parts[4].equals("1"))
+					if(parts[5].equals("1"))
 					{
 						availableFiles = RetrieveFiles(parts[3],parts[2], startIndex);
 						startIndex = availableFiles.length;
@@ -49,10 +49,13 @@ public class FileManager {
 		return availableFiles;
 	}
 	
+	// SHOULD BE SERVER SIDE
+	
 	public String[][] RetrieveFiles(String IP, String sharedFolder, int startIndex) {
 		//print content of files
 		//loop through folder given in parameter and assign to new String
 		//source : https://stackoverflow.com/questions/5694385/getting-the-filenames-of-all-files-in-a-folder
+		
 		File folder = new File(sharedFolder);
 		File[] listOfFiles = folder.listFiles();
 		String[][] files = new String[listOfFiles.length][3];

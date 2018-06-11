@@ -7,6 +7,9 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.DatagramSocket;
+import java.net.ServerSocket;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -14,6 +17,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import connexion.CheckAvailablePort;
 
 public class HomeInterface extends JFrame implements ActionListener {
 
@@ -76,9 +81,21 @@ public class HomeInterface extends JFrame implements ActionListener {
         	client.Client client = new client.Client(txtUsername.getText(), txtPassword.getText());
     		connexion.ClientConnexion connect = new connexion.ClientConnexion();
     		
-    		if (connect.checkClient(client) == true) {  
+    		int clientPort = 0;
+    		CheckAvailablePort portCheck = new CheckAvailablePort();
+    		
+    		for(int i = 50000; i<50100; i++)
+    		{
+    			if(portCheck.available(i))
+    			{
+    				clientPort = i;
+    				i = 50100;
+    			}
+    		}
+    		
+    		if (connect.checkClient(client, clientPort) == true && clientPort > 0) {  
     			
-    			String[][] result = connect.connectClient(client);
+    			String[][] result = connect.connectClient(client, clientPort);
 
     			new interfaces.ConnectedInterface(client, result).setVisible(true);
                 this.setVisible(false);
@@ -87,7 +104,7 @@ public class HomeInterface extends JFrame implements ActionListener {
     		}
     		else
     		{
-    			lblError.setText("incorrect username or password.");
+    			lblError.setText("incorrect username or password OR no available connexion");
     		}
     		
     		/*fileManager.FileManager files = new fileManager.FileManager();
@@ -99,4 +116,5 @@ public class HomeInterface extends JFrame implements ActionListener {
         	this.setVisible(false);
         }
     }  
+	
 }

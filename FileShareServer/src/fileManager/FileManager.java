@@ -30,7 +30,7 @@ public String[][] GetAvailableFiles(String username) {
 				String[] parts = brCheck.readLine().split(";");		
 				if(!parts[0].equals(username))
 				{
-					if(parts[4].equals("1"))
+					if(parts[5].equals("1"))
 					{
 						availableFiles = RetrieveFiles(parts[3],parts[2], startIndex);
 						startIndex = availableFiles.length;

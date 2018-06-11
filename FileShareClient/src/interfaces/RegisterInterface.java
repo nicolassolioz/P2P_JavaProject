@@ -13,6 +13,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import connexion.CheckAvailablePort;
+
 public class RegisterInterface extends JFrame implements ActionListener{
 
 	private JLabel lblUsername = new JLabel("Username : ");
@@ -80,10 +82,30 @@ public class RegisterInterface extends JFrame implements ActionListener{
     		
     		connect.registerNewClient(client);
     		
-    		String[][] result = connect.connectClient(client);
+    		CheckAvailablePort portCheck = new CheckAvailablePort();
+    		int clientPort = 0;
     		
-        	new interfaces.ConnectedInterface(client, result).setVisible(true);
-    		this.setVisible(false);
+    		for(int i = 50000; i<50100; i++)
+    		{
+    			if(portCheck.available(i))
+    			{
+    				clientPort = i;
+    				System.out.println("port " + i + " is available!");
+    				i = 50100;
+    				
+    			}
+    		}
+    		
+    		if (connect.checkClient(client, clientPort) == true && clientPort > 0) 
+    		{  
+    			String[][] result = connect.connectClient(client, clientPort);
+    			new interfaces.ConnectedInterface(client, result).setVisible(true);
+        		this.setVisible(false);
+    		}
+    			
+    		
+    		
+        	
         }
 		
     } 

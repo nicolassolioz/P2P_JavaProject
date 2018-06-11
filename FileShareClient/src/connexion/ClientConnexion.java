@@ -34,7 +34,7 @@ public class ClientConnexion implements java.io.Serializable {
 			BufferedWriter bw = new BufferedWriter(fw);
 			
 			bw.newLine();
-			bw.write(client.getUsername() + ";" + client.getPwd() + ";" + folderName + ";" + "IP" + ";" + "0");
+			bw.write(client.getUsername() + ";" + client.getPwd() + ";" + folderName + ";" + "IP" + ";" + "50000" + ";" + "0");
 			bw.flush();
 			bw.close();
 		} catch (IOException e) {
@@ -45,7 +45,7 @@ public class ClientConnexion implements java.io.Serializable {
 		
 	}
 	
-	public String[][] connectClient(client.Client client) {
+	public String[][] connectClient(client.Client client, int clientPort) {
 					
 			String[][] result = null; //0 = failed connexion, 1 = succesful connexion
 			Socket clientSocket = new Socket();
@@ -59,7 +59,7 @@ public class ClientConnexion implements java.io.Serializable {
 
 				//Ask the server to create a new socket
 				try{
-					//get number of connections and change [] and port number based on that
+
 					clientSocket = new Socket(serverAddress.getHostAddress(),49999);
 
 					System.out.println("We got the connexion to  "+ serverAddress);
@@ -92,7 +92,22 @@ public class ClientConnexion implements java.io.Serializable {
 					OinListClients.close();
 					OoutUsername.close();
 					
-	
+					// CLIENT starts SERVER
+					// to enable other CLIENTS to connect
+					// USE SOCKET 50'000
+					
+					BecomeServer cServer = new BecomeServer();		
+					
+					Thread thread = new Thread()
+					{
+					    public void run()
+					    {
+					    	cServer.connectServer(clientPort);
+					    }
+					};
+					
+					thread.start();
+
 				}
 					
 				catch(IOException ex)
@@ -112,7 +127,7 @@ public class ClientConnexion implements java.io.Serializable {
 			return result;
 	}
 	
-	public void writeDBConnect(client.Client client, int connectDigit) { //MUST BE SERVER SIDE
+	public void writeDBConnect(client.Client client, int connectDigit, int port) { //MUST BE SERVER SIDE
 		
 		String FILENAME = "../FileShareServer/src/db/db";
 		fileManager.FileManager files = new fileManager.FileManager();
@@ -131,12 +146,15 @@ public class ClientConnexion implements java.io.Serializable {
 				if(parts[0].equals(client.getUsername()))
 				{				
 					if(connectDigit == 1)
-						parts[4] = "1";
+					{
+						parts[5] = "1";
+						parts[4] = Integer.toString(port);
+					}					
 					else
-						parts[4] = "0";			
+						parts[5] = "0";			
 				}	
 				
-				toWrite[i] = parts[0] + ";" + parts[1] + ";" + parts[2] + ";" + parts[3] + ";" + parts[4];
+				toWrite[i] = parts[0] + ";" + parts[1] + ";" + parts[2] + ";" + parts[3] + ";" + parts[4] + ";" + parts[5];
 			}
 			
 			//fill file with lines to write
@@ -162,7 +180,7 @@ public class ClientConnexion implements java.io.Serializable {
 		
 	}
 	
-	public boolean checkClient(client.Client client) {
+	public boolean checkClient(client.Client client, int port) {
 		//src = https://www.mkyong.com/java/how-to-read-file-from-java-bufferedreader-example/
 		BufferedReader brLine = null;
 		FileReader frLine = null;
@@ -189,9 +207,9 @@ public class ClientConnexion implements java.io.Serializable {
 
 				if(username.equals(client.getUsername()) && pwd.equals(client.getPwd()))
 				{
-					String newText = parts[0] + ";" + parts[1] + ";" + parts[2] + ";" + parts[3] + ";" + 1; 
-					String oldText = parts[0] + ";" + parts[1] + ";" + parts[2] + ";" + parts[3] + ";" + 0; 
-					writeDBConnect(client, 1);
+					String newText = parts[0] + ";" + parts[1] + ";" + parts[2] + ";" + parts[3] + ";" + port + ";" + 1; 
+					String oldText = parts[0] + ";" + parts[1] + ";" + parts[2] + ";" + parts[3] + ";" + parts[4] + ";" + 0; 
+					writeDBConnect(client, 1, port);
 					return true;
 				}				
 			}
