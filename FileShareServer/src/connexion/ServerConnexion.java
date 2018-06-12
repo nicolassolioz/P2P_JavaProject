@@ -40,6 +40,7 @@ public class ServerConnexion implements java.io.Serializable{
 		logging.CustomFileHandler customFh = new logging.CustomFileHandler();
 		FileHandler fh = customFh.setFileHandler();
 		LOGGER.addHandler(fh);
+		fh.close();
 
 		try {
 

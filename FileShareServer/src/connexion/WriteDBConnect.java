@@ -18,6 +18,7 @@ public class WriteDBConnect {
 		logging.CustomFileHandler customFh = new logging.CustomFileHandler();
 		FileHandler fh = customFh.setFileHandler();
 		LOGGER.addHandler(fh);
+		fh.close();
 	}
 	
 	public void write(String username, int connectDigit, int port) {

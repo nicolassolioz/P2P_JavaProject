@@ -158,7 +158,6 @@ public class ClientConnexion implements java.io.Serializable {
 		// should be server side normally
 		String FILENAME = "../FileShareServer/src/db/db";
 		
-		
 		try {		
 			FileWriter fw = new FileWriter(FILENAME, true);
 			BufferedWriter bw = new BufferedWriter(fw);

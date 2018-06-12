@@ -33,6 +33,7 @@ public class ConnectThread extends Thread{
 		logging.CustomFileHandler customFh = new logging.CustomFileHandler();
 		FileHandler fh = customFh.setFileHandler();
 		LOGGER.addHandler(fh);
+		fh.close();
 					
         this.socket = clientSocket;
     }
@@ -69,6 +70,7 @@ public class ConnectThread extends Thread{
 				
 				OoutListClients.flush();
 				
+				LOGGER.severe("client connected");
 				LOGGER.log(Level.INFO, "client connected");
 			}
 			else
