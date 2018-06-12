@@ -109,9 +109,6 @@ public class HomeInterface extends JFrame implements ActionListener {
     		{
     			lblError.setText("incorrect username or password OR no available connexion");
     		}
-    		
-    		/*fileManager.FileManager files = new fileManager.FileManager();
-    		files.GetAvailableFiles("joanna");*/
         }
         
         if(e.getSource() == btnRegister) {

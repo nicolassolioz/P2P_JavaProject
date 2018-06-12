@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class FileManager {
 public String[][] GetAvailableFiles(String username) {
@@ -16,7 +17,9 @@ public String[][] GetAvailableFiles(String username) {
 
 		String FILENAME = "../FileShareServer/src/db/db";
 		String[][] availableFiles = null;
-		int startIndex = 0;
+		String[][] result = null;
+		
+		ArrayList<String[][]> lstFiles = new ArrayList<>();
 
 		try {			
 			//count lines
@@ -32,12 +35,46 @@ public String[][] GetAvailableFiles(String username) {
 				{
 					if(parts[5].equals("1"))
 					{
-						// NOT POSSIBLE TO GET THIRD CONNEXION, TRY LATER
-						availableFiles = RetrieveFiles(parts[4], parts[3],parts[2], startIndex);
-						startIndex = availableFiles.length;
+						availableFiles = RetrieveFiles(parts[4], parts[3],parts[2], 0);
+						lstFiles.add(availableFiles);
 					}
 				}
-			}			
+			}		
+			
+			// LOOP THROUGH ARRAYLIST AND GET LENGTH OF ARRAY
+			int totalLines = 0;
+			for(int i = 0; i<lstFiles.size(); i++)
+			{
+				result = lstFiles.get(i);
+				totalLines += result.length;
+			}
+			
+			System.out.println("TOTAL NUMBER OF AVAILABLE FILES : " + totalLines);
+			
+			// LOOP THROUGH ARRAYLIST AND FILL STRING[][] RESULT
+			String[][] temp = null;
+			result = new String[totalLines][5];
+
+			int z = 0;
+			
+			for(int i = 0; i< totalLines; i++)
+			{	
+				temp = lstFiles.get(z);
+				System.out.println("LENGTH : " + temp.length);
+				for(int y = 0; y<temp.length; y++)
+				{
+					System.out.println(y);
+					result[i+y] = temp[y];
+				}
+				i +=  temp.length-1;
+				z++;
+				
+				System.out.println(i);
+			}
+			
+			
+			
+			
 			frCheck.close();
 			brCheck.close();
 		} catch (IOException e) {
@@ -46,7 +83,7 @@ public String[][] GetAvailableFiles(String username) {
 
 		}	
 		
-		return availableFiles;
+		return result;
 	}
 
 	public String[][] RetrieveFiles(String socket, String IP, String sharedFolder, int startIndex) {

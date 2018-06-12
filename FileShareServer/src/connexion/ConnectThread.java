@@ -58,10 +58,10 @@ public class ConnectThread extends Thread{
 					OoutListClients.flush();
 				}
 				else
-				{					
+				{		
 					String[][] availableFiles = new String[1][1];
 					availableFiles[0][0] = "failed connection";
-					
+
 					OoutListClients.writeObject(availableFiles);
 				}
 				

@@ -119,15 +119,17 @@ public class ClientConnexion implements java.io.Serializable {
 					
 					try {
 						result = (String[][]) OinListClients.readObject();
-						if (result == null)
+						if (result.length < 1)
 						{
 							result = new String[1][1];
 							result[0][0] = "empty";
 						}
-						
-						if(result[0][0].equals("failed connection"))
-							result = null;
-							
+						else
+						{
+							System.out.println(result);
+							if(result[0][0].equals("failed connection"))
+								result = null;
+						}	
 						
 					} catch (ClassNotFoundException e) {
 						// TODO Auto-generated catch block

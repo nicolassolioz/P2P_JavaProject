@@ -38,18 +38,16 @@ public class ConnectedInterface extends JFrame implements ActionListener{
 		this.availableFiles = availableFiles;
 		
 		DefaultListModel listData = new DefaultListModel();
-		int length = 0;
 		if(availableFiles == null)
 		{
 			listData.addElement("empty");
-			length = 1;
 		}
 		else
 		{
-			length = availableFiles[0].length * availableFiles.length;
 			
-			for(int i = 0; i<availableFiles[0].length; i++)
+			for(int i = 0; i<availableFiles.length; i++)
 			{
+				System.out.println(availableFiles[i][0]);
 				listData.addElement(availableFiles[i][0]);
 			}	
 			
