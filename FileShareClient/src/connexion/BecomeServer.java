@@ -8,6 +8,7 @@ import java.net.SocketException;
 
 public class BecomeServer 
 {
+
 public Boolean isShuttingDown = false;
 	
 	public void shutDown()

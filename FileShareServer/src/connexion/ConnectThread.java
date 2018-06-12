@@ -9,6 +9,12 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 //BASED ON CODE FROM https://stackoverflow.com/questions/10131377/socket-programming-multiple-client-to-one-server
 // ALL RIGHTS RESERVED
@@ -17,9 +23,17 @@ import java.net.Socket;
 
 public class ConnectThread extends Thread{
 	
+	private static final Logger LOGGER = Logger.getLogger(ConnectThread.class.getName());
+	
 	protected Socket socket;
 	private volatile boolean value;
 	public ConnectThread(Socket clientSocket) {
+		
+		// LOGGING PARAMETERS
+		logging.CustomFileHandler customFh = new logging.CustomFileHandler();
+		FileHandler fh = customFh.setFileHandler();
+		LOGGER.addHandler(fh);
+					
         this.socket = clientSocket;
     }
 	
@@ -29,8 +43,6 @@ public class ConnectThread extends Thread{
 	public void run() {
 			{
 			System.out.println("RUN");
-			
-			
 			try {
 				//get client username + password + client port and check if they exist
 				ObjectInputStream OinClient = new ObjectInputStream(socket.getInputStream());
@@ -56,12 +68,15 @@ public class ConnectThread extends Thread{
 					OoutListClients.writeObject(availableFiles);
 					
 					OoutListClients.flush();
+					
+					LOGGER.log(Level.INFO, "client connected");
 				}
 				else
 				{		
 					String[][] availableFiles = new String[1][1];
 					availableFiles[0][0] = "failed connection";
 
+					LOGGER.log(Level.WARNING, "failed to connect");
 					OoutListClients.writeObject(availableFiles);
 				}
 				
@@ -73,6 +88,7 @@ public class ConnectThread extends Thread{
 							
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
+				LOGGER.log(Level.SEVERE, "error while fetching info from client", e);
 				e.printStackTrace();
 			}	
 		}
@@ -80,7 +96,7 @@ public class ConnectThread extends Thread{
 	
 	
 	
-	public boolean checkClient(String username, String pwd, int port) { //MUST BE SERVER SIDE
+	public boolean checkClient(String username, String pwd, int port) {
 		//src = https://www.mkyong.com/java/how-to-read-file-from-java-bufferedreader-example/
 		BufferedReader brLine = null;
 		FileReader frLine = null;
@@ -119,7 +135,7 @@ public class ConnectThread extends Thread{
 			frCheck.close();
 			brCheck.close();
 		} catch (IOException e) {
-
+			LOGGER.log(Level.SEVERE, "error while connecting with client", e);
 			e.printStackTrace();
 
 		} finally {
@@ -134,6 +150,7 @@ public class ConnectThread extends Thread{
 
 			} catch (IOException ex) {
 
+				LOGGER.log(Level.SEVERE, "error while connecting with client", ex);
 				ex.printStackTrace();
 			}
 		}		

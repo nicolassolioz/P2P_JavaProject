@@ -32,8 +32,6 @@ public class ClientConnexion implements java.io.Serializable {
 	
 	public void registerNewClient(client.Client client, String folderName) { 
 		
-		// MUST BE DONE SERVER SIDE NORMALLY
-		// MUST NORMALLY ALSO CHECK IF USERNAME DOESN'T ALREADY EXIST
 		String FILENAME = "../FileShareServer/src/db/db";
 		
 		try {

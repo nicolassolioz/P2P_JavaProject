@@ -5,9 +5,20 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class WriteDBConnect {
+	
+	private static final Logger LOGGER = Logger.getLogger(ConnectThread.class.getName());
 
+	public WriteDBConnect() {
+		// LOGGING PARAMETERS
+		logging.CustomFileHandler customFh = new logging.CustomFileHandler();
+		FileHandler fh = customFh.setFileHandler();
+		LOGGER.addHandler(fh);
+	}
 public void write(String username, int connectDigit, int port) {
 		
 		String FILENAME = "../FileShareServer/src/db/db";
@@ -60,6 +71,7 @@ public void write(String username, int connectDigit, int port) {
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			LOGGER.log(Level.SEVERE, "error while writing in server db", e);
 			e.printStackTrace();
 		}
 		

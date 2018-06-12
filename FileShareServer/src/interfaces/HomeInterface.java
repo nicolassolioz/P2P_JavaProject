@@ -11,6 +11,9 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -19,10 +22,13 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import connexion.ConnectThread;
 import connexion.ServerConnexion;
 import connexion.WriteDBConnect;
 
 public class HomeInterface extends JFrame implements ActionListener{
+		
+	private static final Logger LOGGER = Logger.getLogger(ConnectThread.class.getName());
 
 	JButton btnStartServer = new JButton("Start the server");
 	JButton btnCloseServer = new JButton("Stop the Server");
@@ -45,6 +51,12 @@ public class HomeInterface extends JFrame implements ActionListener{
 	JPanel panel = new JPanel(new GridBagLayout());
 	
 	public HomeInterface() {
+		
+		// LOGGING PARAMETERS
+		logging.CustomFileHandler customFh = new logging.CustomFileHandler();
+		FileHandler fh = customFh.setFileHandler();
+		LOGGER.addHandler(fh);
+		
 		setPreferredSize(new Dimension(500,300));
 		
 		GridBagConstraints constraints = new GridBagConstraints();
@@ -110,6 +122,7 @@ public class HomeInterface extends JFrame implements ActionListener{
 				panel.getComponent(5).setVisible(false);
 				panel.repaint();
 				panel.revalidate();
+				LOGGER.log(Level.INFO, "server started", e);
 				thread.start();
 			}
 				
@@ -127,18 +140,18 @@ public class HomeInterface extends JFrame implements ActionListener{
 				panel.getComponent(5).setVisible(true);
 				panel.repaint();
 				panel.revalidate();
-				
+
 				sConnect.shutDown();
+				LOGGER.log(Level.INFO, "server closed", e);
 				thread.interrupt();
 				
 				try {
 					thread.join();
 				} catch (InterruptedException e1) {
 					// TODO Auto-generated catch block
+					LOGGER.log(Level.SEVERE, "error while closing server", e1);
 					e1.printStackTrace();
 				}
-				
-				
 			}				
 			else
 				lblError.setText("The server hasn't started yet.");
@@ -148,6 +161,7 @@ public class HomeInterface extends JFrame implements ActionListener{
 			WriteDBConnect writeCo = new WriteDBConnect();
 			writeCo.write("all", 0, 50000);
 			System.out.println("client connexion trace has been erased");
+			LOGGER.log(Level.INFO, "client connexion trace has been erased", e);
 		}
 	}
 }

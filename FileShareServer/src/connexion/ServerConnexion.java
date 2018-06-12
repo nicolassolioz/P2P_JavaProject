@@ -11,14 +11,22 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.io.OutputStream;
 
 import javax.swing.DefaultListModel;
 
 public class ServerConnexion implements java.io.Serializable{
 
+	private static final Logger LOGGER = Logger.getLogger(ConnectThread.class.getName());
+	
 	public Boolean isShuttingDown = false;
 	
+	/*public ServerConnexion() {
+		
+	}*/
 	public void shutDown()
 	{
 		System.out.println("killing the server");
@@ -31,6 +39,10 @@ public class ServerConnexion implements java.io.Serializable{
 		Socket srvSocket = null ;
 		InetAddress localAddress=null;
 
+		// LOGGING PARAMETERS
+		logging.CustomFileHandler customFh = new logging.CustomFileHandler();
+		FileHandler fh = customFh.setFileHandler();
+		LOGGER.addHandler(fh);
 
 		try {
 
@@ -54,7 +66,7 @@ public class ServerConnexion implements java.io.Serializable{
 	                ConnectThread thread = new ConnectThread(srvSocket);
 		            thread.start();
 	            } catch (IOException e) {
-	                // no new connection
+	            	//e.printStackTrace();
 	            }       
 	        }
 
@@ -62,10 +74,11 @@ public class ServerConnexion implements java.io.Serializable{
 			
 		}catch (SocketException e) {
 
-			//System.out.println("Connection Timed out");
+			LOGGER.log(Level.WARNING, "error while connecting with server", e);
 			e.printStackTrace();
 		}
 		catch (IOException e) {
+			LOGGER.log(Level.SEVERE, "error while connecting with server", e);
 			e.printStackTrace();
 		}
 

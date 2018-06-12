@@ -6,8 +6,22 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import connexion.ConnectThread;
 
 public class FileManager {
+	
+	private static final Logger LOGGER = Logger.getLogger(ConnectThread.class.getName());
+	
+	public FileManager() {
+		// LOGGING PARAMETERS
+		logging.CustomFileHandler customFh = new logging.CustomFileHandler();
+		FileHandler fh = customFh.setFileHandler();
+		LOGGER.addHandler(fh);
+	}
 public String[][] GetAvailableFiles(String username) {
 		
 		/*username = getAvailableFiles for THIS username (excludes himself from loop)
@@ -79,6 +93,7 @@ public String[][] GetAvailableFiles(String username) {
 			brCheck.close();
 		} catch (IOException e) {
 
+			LOGGER.log(Level.SEVERE, "error while fetching available files", e);
 			e.printStackTrace();
 
 		}	
@@ -126,9 +141,11 @@ public String[][] GetAvailableFiles(String username) {
 			
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
+			LOGGER.log(Level.SEVERE, "error while fetching files", e);
 			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			LOGGER.log(Level.SEVERE, "error while fetching files", e);
 			e.printStackTrace();
 		}
 	
