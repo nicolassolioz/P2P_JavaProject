@@ -6,10 +6,13 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 
-public class BecomeServer 
-{
+// class used when client connects to server
+// now, the client enables connections to himself in order to send files
 
-public Boolean isShuttingDown = false;
+public class BecomeServer {
+	
+	// boolean used to indicate to server to shutdown
+	public Boolean isShuttingDown = false;
 	
 	public void shutDown()
 	{
@@ -23,22 +26,18 @@ public Boolean isShuttingDown = false;
 		Socket srvSocket = null ;
 		InetAddress localAddress=null;
 
-
 		try {
-
 			localAddress = InetAddress.getLocalHost();
 			mySkServer = new ServerSocket(port,5,localAddress);
-			
-			System.out.println("Default Timeout :" + mySkServer.getSoTimeout());
+
 			System.out.println("Used IpAddress :" + mySkServer.getInetAddress());
 			System.out.println("Listening to Port :" + mySkServer.getLocalPort());
 
 			mySkServer.setSoTimeout(1000);
 
-            //Listen to a client connection wait until a client connects			
+            // Listen to a client connection wait until a client connects			
 			System.out.println("Waiting for a client connection:");
-
-			
+	
 			while (!isShuttingDown) {
 	            try {
 	                srvSocket = mySkServer.accept();
@@ -53,10 +52,9 @@ public Boolean isShuttingDown = false;
 			mySkServer.close();
 			
 		}catch (SocketException e) {
-
-			//System.out.println("Connection Timed out");
 			e.printStackTrace();
 		}
+		
 		catch (IOException e) {
 			e.printStackTrace();
 		}

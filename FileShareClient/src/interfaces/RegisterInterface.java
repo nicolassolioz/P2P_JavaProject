@@ -59,8 +59,7 @@ public class RegisterInterface extends JFrame implements ActionListener{
 		constraints.gridx = 0;
 		constraints.gridy = 2;
 		panel.add(lblFolder, constraints);
-		
-		
+
 		constraints.gridx = 1;
 		panel.add(txtFolder, constraints);
 		

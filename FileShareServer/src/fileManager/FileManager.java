@@ -14,7 +14,7 @@ import connexion.ConnectThread;
 
 public class FileManager {
 	
-	private static final Logger LOGGER = Logger.getLogger(ConnectThread.class.getName());
+	private static final Logger LOGGER = Logger.getLogger("MyLog");
 	
 	public FileManager() {
 		// LOGGING PARAMETERS
@@ -22,7 +22,8 @@ public class FileManager {
 		FileHandler fh = customFh.setFileHandler();
 		LOGGER.addHandler(fh);
 	}
-public String[][] GetAvailableFiles(String username) {
+	
+	public String[][] GetAvailableFiles(String username) {
 		
 		/*username = getAvailableFiles for THIS username (excludes himself from loop)
 		get all available files of connected clients where username != username AND isConnected
@@ -85,13 +86,12 @@ public String[][] GetAvailableFiles(String username) {
 				
 				System.out.println(i);
 			}
-			
-			
-			
-			
+
 			frCheck.close();
 			brCheck.close();
-		} catch (IOException e) {
+			
+		} 
+		catch (IOException e) {
 
 			LOGGER.log(Level.SEVERE, "error while fetching available files", e);
 			e.printStackTrace();
@@ -102,9 +102,11 @@ public String[][] GetAvailableFiles(String username) {
 	}
 
 	public String[][] RetrieveFiles(String socket, String IP, String sharedFolder, int startIndex) {
+		
+		//CODE BASED ON : https://stackoverflow.com/questions/5694385/getting-the-filenames-of-all-files-in-a-folder
 		//print content of files
 		//loop through folder given in parameter and assign to new String
-		//source : https://stackoverflow.com/questions/5694385/getting-the-filenames-of-all-files-in-a-folder
+		
 		File folder = new File(sharedFolder);
 		File[] listOfFiles = folder.listFiles();
 		String[][] files = new String[listOfFiles.length][5];
@@ -121,10 +123,7 @@ public String[][] GetAvailableFiles(String username) {
 		    		files[i][3] = "d";
 	
 		    	}
-		//********************************************************************
-		    
-		return files;
-		
+		return files;	
 	}
 
 	public int getNumberLines() {
@@ -139,11 +138,13 @@ public String[][] GetAvailableFiles(String username) {
 			brLine = new BufferedReader(frLine);
 			while (brLine.readLine() != null) result++;
 			
-		} catch (FileNotFoundException e) {
+		} 
+		catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			LOGGER.log(Level.SEVERE, "error while fetching files", e);
 			e.printStackTrace();
-		} catch (IOException e) {
+		} 
+		catch (IOException e) {
 			// TODO Auto-generated catch block
 			LOGGER.log(Level.SEVERE, "error while fetching files", e);
 			e.printStackTrace();

@@ -28,7 +28,7 @@ import connexion.WriteDBConnect;
 
 public class HomeInterface extends JFrame implements ActionListener{
 		
-	private static final Logger LOGGER = Logger.getLogger(ConnectThread.class.getName());
+	private static final Logger LOGGER = Logger.getLogger("MyLog");
 
 	JButton btnStartServer = new JButton("Start the server");
 	JButton btnCloseServer = new JButton("Stop the Server");
@@ -118,6 +118,7 @@ public class HomeInterface extends JFrame implements ActionListener{
 			{
 				lblServer.setText("Online");
 				
+				// show green light
 				panel.getComponent(4).setVisible(true);
 				panel.getComponent(5).setVisible(false);
 				panel.repaint();
@@ -136,6 +137,7 @@ public class HomeInterface extends JFrame implements ActionListener{
 			{
 				lblServer.setText("Offline");
 				
+				// show red light
 				panel.getComponent(4).setVisible(false);
 				panel.getComponent(5).setVisible(true);
 				panel.repaint();
@@ -158,6 +160,7 @@ public class HomeInterface extends JFrame implements ActionListener{
 		}		
 		if(e.getSource() == btnDisconnect)
 		{
+			// reset all values in db file
 			WriteDBConnect writeCo = new WriteDBConnect();
 			writeCo.write("all", 0, 50000);
 			System.out.println("client connexion trace has been erased");

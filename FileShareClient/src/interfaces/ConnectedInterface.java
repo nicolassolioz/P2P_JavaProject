@@ -37,6 +37,7 @@ public class ConnectedInterface extends JFrame implements ActionListener{
 		this.client = client;
 		this.availableFiles = availableFiles;
 		
+		// fill list with available files based on current connected clients
 		DefaultListModel listData = new DefaultListModel();
 		if(availableFiles == null)
 		{
@@ -52,13 +53,12 @@ public class ConnectedInterface extends JFrame implements ActionListener{
 			}	
 			
 		}
-		
-		
+	
 		listFiles = new JList(listData);
-
 
 		JPanel panel = new JPanel(new GridBagLayout());
 		
+		// place elements
 		GridBagConstraints constraints = new GridBagConstraints();
         constraints.anchor = GridBagConstraints.WEST;
         constraints.insets = new Insets(10, 10, 10, 10);
@@ -98,17 +98,23 @@ public class ConnectedInterface extends JFrame implements ActionListener{
 		if(e.getSource() == btnDownload)
         {	
 
+			// get info of selected file
         	String file = availableFiles[listFiles.getSelectedIndex()][0];
         	String IP = availableFiles[listFiles.getSelectedIndex()][1];
         	int port = Integer.valueOf(availableFiles[listFiles.getSelectedIndex()][2]);
         	String shareFolder = availableFiles[listFiles.getSelectedIndex()][4];
         	
+        	// here I indicate the name of the file, in which folder it is, and which socket and port to use
+        	// unfortunately, firewalls restrictions do not allow me to use the ip, so I connect to the server
+        	// using the localHost address (loopback)
         	System.out.println(IP);
         	connect.getFile(file, IP, port, shareFolder);
         }
         
         if(e.getSource() == btnDisconnect) {
 
+        	// does not effectively disconnect
+        	// hides panel
         	this.setVisible(false);
         }
     }

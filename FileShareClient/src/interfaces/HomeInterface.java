@@ -102,9 +102,8 @@ public class HomeInterface extends JFrame implements ActionListener {
     			
     			new interfaces.ConnectedInterface(client, result).setVisible(true);
                 this.setVisible(false);
- 
-    			
     		}
+    		
     		else
     		{
     			lblError.setText("incorrect username or password OR no available connexion");

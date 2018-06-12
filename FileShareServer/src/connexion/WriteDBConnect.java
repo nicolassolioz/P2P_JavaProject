@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 
 public class WriteDBConnect {
 	
-	private static final Logger LOGGER = Logger.getLogger(ConnectThread.class.getName());
+	private static final Logger LOGGER = Logger.getLogger("MyLog");
 
 	public WriteDBConnect() {
 		// LOGGING PARAMETERS
@@ -19,7 +19,8 @@ public class WriteDBConnect {
 		FileHandler fh = customFh.setFileHandler();
 		LOGGER.addHandler(fh);
 	}
-public void write(String username, int connectDigit, int port) {
+	
+	public void write(String username, int connectDigit, int port) {
 		
 		String FILENAME = "../FileShareServer/src/db/db";
 		fileManager.FileManager files = new fileManager.FileManager();
@@ -74,7 +75,5 @@ public void write(String username, int connectDigit, int port) {
 			LOGGER.log(Level.SEVERE, "error while writing in server db", e);
 			e.printStackTrace();
 		}
-		
-		
 	}
 }

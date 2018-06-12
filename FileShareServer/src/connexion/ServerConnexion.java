@@ -20,13 +20,10 @@ import javax.swing.DefaultListModel;
 
 public class ServerConnexion implements java.io.Serializable{
 
-	private static final Logger LOGGER = Logger.getLogger(ConnectThread.class.getName());
+	private static final Logger LOGGER = Logger.getLogger("MyLog");
 	
 	public Boolean isShuttingDown = false;
 	
-	/*public ServerConnexion() {
-		
-	}*/
 	public void shutDown()
 	{
 		System.out.println("killing the server");
@@ -58,7 +55,6 @@ public class ServerConnexion implements java.io.Serializable{
             //Listen to a client connection wait until a client connects			
 			System.out.println("Waiting for a client connection:");
 
-			
 			while (!isShuttingDown) {
 	            try {
 	                srvSocket = mySkServer.accept();

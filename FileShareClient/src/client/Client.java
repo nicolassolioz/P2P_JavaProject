@@ -1,5 +1,7 @@
 package client;
 
+// Class used to easily pass client username and password
+
 public class Client {
 
 String username;

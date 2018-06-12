@@ -24,9 +24,7 @@ public class ConnectThread extends Thread{
     }
 	
 	public void run() {
-		{
-		System.out.println("RUN");
-		//get file
+
 		try {
 			
 			// get file name AND path from client
@@ -60,14 +58,11 @@ public class ConnectThread extends Thread{
 					
 			OoutFile.flush();
 			OinFile.close();
-			OoutFile.close();
-			
-			
-		} catch (IOException e) {
+			OoutFile.close();			
+		} 
+		catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}	
 	}
-	}
-	
 }

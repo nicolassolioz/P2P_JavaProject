@@ -30,26 +30,6 @@ import client.Client;
 //check username and pwd with user.txt file, if ok, validate the connexion
 public class ClientConnexion implements java.io.Serializable {
 	
-	public void registerNewClient(client.Client client, String folderName) { 
-		
-		String FILENAME = "../FileShareServer/src/db/db";
-		
-		try {
-			FileWriter fw = new FileWriter(FILENAME, true);
-			BufferedWriter bw = new BufferedWriter(fw);
-			
-			bw.newLine();
-			bw.write(client.getUsername() + ";" + client.getPwd() + ";" + folderName + ";" + "IP" + ";" + "50000" + ";" + "0");
-			bw.flush();
-			bw.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
-	}
-	
 	public void getFile(String filename, String IP, int port, String path) {	
 		try {
 			// connect to server based on parameters given in constructor
@@ -58,8 +38,7 @@ public class ClientConnexion implements java.io.Serializable {
 			// send file name AND path to server
 			ObjectOutputStream OoutFilename = new ObjectOutputStream(clientSocket.getOutputStream());
 
-			OoutFilename.writeUTF(filename + ";" + path);
-			
+			OoutFilename.writeUTF(filename + ";" + path);	
 			OoutFilename.flush();
 					
 			// get file from server			
@@ -70,7 +49,7 @@ public class ClientConnexion implements java.io.Serializable {
 			
 			// write new file in share folder
 			FileOutputStream fos = new FileOutputStream(
-					new File(".\\downloads\\" + filename));
+			new File(".\\downloads\\" + filename));
 
 			fos.write(byteArray);
 			fos.close();
@@ -80,7 +59,8 @@ public class ClientConnexion implements java.io.Serializable {
 			OoutFilename.close();
 			clientSocket.close();
 			
-		} catch (IOException e) {
+		} 
+		catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -129,7 +109,8 @@ public class ClientConnexion implements java.io.Serializable {
 								result = null;
 						}	
 						
-					} catch (ClassNotFoundException e) {
+					} 
+					catch (ClassNotFoundException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
@@ -157,7 +138,7 @@ public class ClientConnexion implements java.io.Serializable {
 					
 				catch(IOException ex)
 				{
-					System.out.println("connection didn't work CLIENT CONNEXION.");
+					System.out.println("connection didn't work");
 				}	
 				
 			}catch (UnknownHostException e) {
@@ -172,6 +153,23 @@ public class ClientConnexion implements java.io.Serializable {
 			return result;
 	}
 	
-	
-	
+	public void registerNewClient(client.Client client, String folderName) { 
+		
+		// should be server side normally
+		String FILENAME = "../FileShareServer/src/db/db";
+		
+		
+		try {		
+			FileWriter fw = new FileWriter(FILENAME, true);
+			BufferedWriter bw = new BufferedWriter(fw);
+
+			bw.append(client.getUsername() + ";" + client.getPwd() + ";" + folderName + ";" + "IP" + ";" + "50000" + ";" + "0\n");
+			bw.flush();
+			bw.close();
+		} 
+		catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }
